@@ -38,3 +38,77 @@ class User {
 
 }
 
+class Student extends User {
+
+  constructor(name, surname, year) {
+    super(name, surname);
+
+    if (!Student.isSafeYear(year)) {
+      throw new RangeError(
+          `The year should be in range from ${Student.getCurrentYear() - 5} 
+           to ${Student.getCurrentYear()}`);
+    }
+
+    this._year = year;
+  }
+
+  /**
+   * Returns the current year
+   * @returns {number}
+   */
+  static getCurrentYear() {
+    return new Date().getFullYear();
+  }
+
+  /**
+   * Checks if year of entering is valid
+   * and not exceeding the range of 5 courses
+   * @param   {number} year
+   * @returns {boolean}
+   */
+  static isSafeYear(year) {
+
+    if (typeof year !== 'number' || !Number.isSafeInteger(year) || year < 0) {
+      throw new TypeError('The year should be a positive integer');
+    }
+
+    const currentYear = Student.getCurrentYear();
+
+    if (currentYear < year) {
+      return false;
+    }
+
+    return currentYear - year <= 5;
+
+  }
+
+  set year(v) {
+
+    if (!Student.isSafeYear(v)) {
+      throw new RangeError(
+          `The year should be in range from ${Student.getCurrentYear() - 5} 
+           to ${Student.getCurrentYear()}`);
+    }
+
+    this._year = v;
+  }
+
+  get year() {
+    return this._year;
+  }
+
+  getCourse() {
+
+    const course = Student.getCurrentYear() - this.year;
+
+    if (course === 0) {
+      return 1;
+    }
+
+    return course;
+  }
+
+}
+
+const stud = new Student('Test', 'Testovich', 2020);
+console.log(stud.getCourse());
